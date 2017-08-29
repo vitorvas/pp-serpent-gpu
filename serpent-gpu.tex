@@ -1,0 +1,202 @@
+\documentclass{anstrans}
+
+%%%% packages and definitions (optional)
+\usepackage{graphicx} % allows inclusion of graphics
+\usepackage{booktabs} % nice rules (thick lines) for tables
+\usepackage{microtype} % improves typography for PDF
+
+
+\newcommand{\SN}{S$_N$}
+\renewcommand{\vec}[1]{\bm{#1}} % vector is bold italic
+\newcommand{\vd}{\bm{\cdot}} % slightly bold vector dot
+\newcommand{\grad}{\vec{\nabla}} % gradient
+\newcommand{\ud}{\mathop{}\!\mathrm{d}} % upright derivative symbol
+
+
+%%%% changes from the original 'anstrans' class
+\usepackage{fancyhdr} % allows headers and footers
+
+\renewcommand\headrule{} % remove underline in the header
+\setcounter{secnumdepth}{1}
+\renewcommand{\thesection}{\Roman{section}.}
+\renewcommand{\thesubsection}{\arabic{subsection}.}
+\renewcommand{\thesubsubsection}{\Alph{subsubsection}.}
+\makeatletter
+\renewcommand*{\@seccntformat}[1]{\csname the#1\endcsname\hspace{1mm}}
+\makeatother
+
+
+%%%% Header
+%\pagestyle{fancy}
+%\fancyhf{}
+%\fancyhead[L]{\fontsize{9}{9} \itshape
+%M\&C 2017 - International Conference on Mathematics \& Computational Methods Applied to Nuclear Science \& Engineering,
+%\\ Jeju, Korea, April 16-20, 2017, on USB (2017)
+%}
+
+
+%%%% Maketitle
+\title{Serpent nuclear code OpenCL extension}
+\author{Vitor V. A. Silva,$^{*}$}
+
+\institute{
+$^{*}$Centro de Desenvolvimento da Tecnologia Nuclear, CEP: 30......
+Belo Horizonte - MG, Brazil
+}
+
+\email{vitors@cdtn.br}
+
+% Optional disclaimer: remove this command to hide
+\disclaimer{Notice: this manuscript is a work of fiction. Any resemblance to
+actual articles, living or dead, is purely coincidental.}
+
+
+%%%% Abstract
+\begin{document}
+\vspace*{-42pt}
+\begin{strip}
+\centering{\parbox{153mm}{{\bf Abstract} \itshape - 
+This is the abstract one day I'll write
+}\par}
+\vspace*{14pt}
+\end{strip}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+
+Serpent Nuclear code is... (some paragraphs of Serpent).
+What is OpenCL and why this is usefull in this case?
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Theory - Random Numbers Generation}
+
+The absolutely key concept that must be understood in order to use the Monte Carlo method is
+the generation of random numbers. Unsurprisenly, there are many well-known methods of varying
+complexity and offering different quality\footnote{Quality is used in the sense of
+  repeatbility, robustness, speed and randonmness of the numbers.} of the random numbers.
+In this section the way the Serpent code generates its random numbers is explained.
+
+\begin{subequations} \label{eqs:fullTransport}
+\begin{multline} \label{eq:fullTransportVol}
+  \vec{\Omega}\vd \grad \psi(\vec{x}, \vec{\Omega})
+  + \sigma(\vec{x}) \psi (\vec{x}, \vec{\Omega})
+\\ =
+  \frac{\sigma_s(\vec{x})}{4\pi} \int_{4\pi} \psi(\vec{x},\vec{\Omega}')
+  \ud\Omega' + \frac{q(\vec{x})}{4\pi}
+  \equiv \frac{1}{4\pi} Q(\vec{x}) \,,
+\end{multline}
+inside $\vec{x} \in V$, $\vec{\Omega} \in 4\pi$, with an incident boundary
+condition
+\begin{equation} \label{eq:fullTransportBndy}
+  \psi(\vec{x}, \vec{\Omega}) = \psi^b(\vec{x}, \vec{\Omega}) \,,
+ \quad \vec{x} \in \partial V, \ \vec{\Omega} \vd \vec{n} < 0\,.
+\end{equation}
+\end{subequations}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results and Analysis}
+The results were interesting, so interesting in fact that we have decided to
+present them here.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Subsection Goes Here}
+The user must manually capitalize initial letters of a subsection heading.
+
+For those who like equations in their papers, \LaTeX\ is a good choice. Here is
+an equation for the Marshak diffusion boundary condition:
+\begin{equation} \label{eq:marshak}
+  4 J^- = \phi + 2 D \vec{n} \vd \grad \phi \,.
+\end{equation}
+If we so choose, we can effortlessly reference the equation later.
+
+Another paragraph starts with Eq.~\eqref{eq:marshak} and sets $J^-$ to zero, a
+vacuum boundary condition:
+\begin{equation*}
+  0 = \phi + \frac{2}{3} \frac{1}{\sigma} \vec{n} \vd \grad \phi \,.
+\end{equation*}
+The extrapolation distance is $2/3$. A more detailed asymptotic analysis yields
+an extrapolation distance of about $0.71045$.
+
+Figure~\ref{fig:voltage} shows how a plot might conceivably look in your
+document. Always place figures after they are referenced so as not to throw
+off the reader. You can use symbols and different line styles to help
+differentiate your results, especially if they are printed in black and white.
+Note how Fig.~\ref{fig:voltage} uses dashed lines \verb|--| for the exact
+solution, solid lines \verb|-| for the new method's solutions, and dotted lines
+\verb|:| for existing inaccurate methods.
+\begin{figure}[ht] % replace 't' with 'b' to force it to be on the bottom
+  \centering
+  \includegraphics{example_figure}
+  \caption{Captions are flush with the left.}
+  \label{fig:voltage}
+\end{figure}
+
+Later on, we can include a table, even one that spans two columns such as
+Table~\ref{tab:widetable}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table*}[htb]
+  \centering
+\begin{tabular}{llllllllll}\toprule
+      & $\phi_T(0)$      & $\phi_T(10)$      & $\phi_T(20)$      &
+      $\phi_D(0)$      & $\phi_D(10)$      & $\phi_D(20)$      & $\rho$      &
+      $\varepsilon$      & $N_\text{it}$
+\\ \midrule
+$c=0.999$  & 0.9038 & 20.63 & 31.24 & 0.9087 & 20.63 & 31.23 & 0.2192 & $10^{-7}$ & 15
+\\
+$c=0.990$  & 0.3675 & 13.04 & 24.7 & 0.3696 & 13.04 & 24.69 & 0.2184 & $10^{-7}$ & 15
+\\
+$c=0.900$  & 0.009909 & 4.776 & 17.64 & 0.009984 & 4.786 & 17.63 & 0.2118 & $10^{-7}$ & 14
+\\
+$c=0.500$  & $6.069\times 10^{-5}$ & 2.212 & 15.53 & 6.213$\times 10^{-5}$ & 2.239 & 15.53 & 0.2068 & $10^{-7}$ & 13
+\\
+\bottomrule
+\end{tabular}
+  \caption{This is an example of a really wide table which might not normally
+  fit in the document.}
+  \label{tab:widetable}
+\end{table*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Notice how the table reference uses a Roman numeral
+for its numbering scheme, whereas the figure reference uses an Arabic numeral.
+For one-column tables, use the \verb|table| environment; two-column tables use
+\verb|table*|. The same applies to figures.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Another Subsection}
+Excessive sectioning in a three-page document is discouraged, but here are more
+subsections to demonstrate compliance with the ANS formatting guidelines.
+
+\subsubsection{Third-level Heading}
+This subsubsection shows compliance with the ANS-specified standard. This level
+of heading should be used rarely.
+
+\subsubsection{Another Such Heading}
+And, if you really think you need a third-level heading, you should make sure
+that your subsection needs at least two of them.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusions}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+\section{Appendix}
+
+Numbering in the appendix is different:
+\begin{equation} \label{eq:appendix}
+  2 + 2 = 5\,.
+\end{equation}
+and another equation:
+\begin{equation} \label{eq:appendix2}
+  a + b = c\,.
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Acknowledgments}
+This material is based upon work supported a Department of Energy Nuclear
+Energy University Programs Graduate Fellowship.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliographystyle{ans} % Don't forget to run BibTeX !
+\bibliography{serpent-opencl}
+
+\end{document}
