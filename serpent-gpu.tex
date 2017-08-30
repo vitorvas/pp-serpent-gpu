@@ -66,15 +66,21 @@ This is the abstract one day I'll write
 \section{Introduction}
 
 Serpent Nuclear code is... (some paragraphs of Serpent).
-What is OpenCL and why this is usefull in this case?
+OpenCL brings to Serpent the ability to take advantage of a variety of different hardware
+without special codification. This means, if a user has Graphic Processor Unities (GPU)
+available, Serpent is able to use this additional computational power to simulate
+more neutron histories.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Theory - Random Numbers Generation}
+\section{Theory}
 
+\subsection{Random Numbers Generation}
 The absolutely key concept that must be understood in order to use the Monte Carlo method is
 the generation of random numbers. Unsurprisenly, there are many well-known methods of varying
 complexity and offering different quality\footnote{Quality is used in the sense of
   repeatbility, robustness, speed and randonmness of the numbers.} of the random numbers.
 In this section the way the Serpent code generates its random numbers is explained.
+
+\subsection{Sample methods in Serpent}
 
 \begin{subequations} \label{eqs:fullTransport}
 \begin{multline} \label{eq:fullTransportVol}
