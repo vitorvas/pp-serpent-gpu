@@ -1,4 +1,4 @@
-\documentclass{anstrans}
+\documentclass[twoside,a4paper,12pt,english,draft]{anstrans}
 
 %%%% packages and definitions (optional)
 \usepackage{graphicx} % allows inclusion of graphics
@@ -66,10 +66,30 @@ This is the abstract one day I'll write
 \section{Introduction}
 
 Serpent Nuclear code is... (some paragraphs of Serpent).
+
+There are many consideratios to be taken in account during the process of implementing new
+features in an existing code. Specifically regarding the Serpent Nuclear code, it must be
+said that it already implements two forms of CPU parallelization. Serpent is able to use
+OpenMP\cite{omp} to execute threads calculations. It is also capable of using OpenMPI\cite{openmpi}
+to carry on parallel calculations on many processors. It is not the objective in this paper
+to explain the differences between OpenMP and OpenMPI, but it is enough to say that the former
+is thread based, which means processes (or threads) share the memory space while for the latter
+each process has its own memory space and information is exchanged by the use of messages.
+
+That said, a question raises: why bother spending time in implementing OpenCL parallelization
+in a code already parallel capable. The answer is more or less straighfoward. However, to fully
+answer the question, it is necessary to give a small introduction on what is OpenCL and why
+it can be usefull for Serpent.
+
+\subsection{What is OpenCL?}
+
+OpenCL\cite{opencl} is a...
+
 OpenCL brings to Serpent the ability to take advantage of a variety of different hardware
 without special codification. This means, if a user has Graphic Processor Unities (GPU)
 available, Serpent is able to use this additional computational power to simulate
 more neutron histories.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Theory}
 
@@ -130,12 +150,13 @@ differentiate your results, especially if they are printed in black and white.
 Note how Fig.~\ref{fig:voltage} uses dashed lines \verb|--| for the exact
 solution, solid lines \verb|-| for the new method's solutions, and dotted lines
 \verb|:| for existing inaccurate methods.
-\begin{figure}[ht] % replace 't' with 'b' to force it to be on the bottom
-  \centering
-  \includegraphics{example_figure}
-  \caption{Captions are flush with the left.}
-  \label{fig:voltage}
-\end{figure}
+
+%\begin{figure}[ht] % replace 't' with 'b' to force it to be on the bottom
+%  \centering
+%  \includegraphics{example_figure}
+%  \caption{Captions are flush with the left.}
+%  \label{fig:voltage}
+%\end{figure}
 
 Later on, we can include a table, even one that spans two columns such as
 Table~\ref{tab:widetable}.
