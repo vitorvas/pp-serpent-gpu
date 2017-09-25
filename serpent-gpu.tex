@@ -102,6 +102,11 @@ In this section the way the Serpent code generates its random numbers is explain
 
 \subsection{Sample methods in Serpent}
 
+\subsection{OpenCL in Serpent}
+
+The way it works with CPUs.
+The way it works wiht GPUs.
+
 \begin{subequations} \label{eqs:fullTransport}
 \begin{multline} \label{eq:fullTransportVol}
   \vec{\Omega}\vd \grad \psi(\vec{x}, \vec{\Omega})
@@ -121,8 +126,17 @@ condition
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results and Analysis}
-The results were interesting, so interesting in fact that we have decided to
-present them here.
+
+In order to assess the results of using OpenCL (supposing the implementation works)
+is to simulate the TRIGA IPR-R1 in different setups:
+\begin{enumerate}
+\item Serpent with OpenMP;
+\item Serpent with MPI;
+\item Serpent with hybrid OpenMP/MPI (is it possible?);
+\item Serpent with OpenCL CPU;
+\item Serpent with OpenCL GPU;
+  \item Serpent with OpenCL CPU and GPU;
+  \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Subsection Goes Here}
