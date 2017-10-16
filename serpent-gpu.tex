@@ -102,6 +102,22 @@ In this section the way the Serpent code generates its random numbers is explain
 
 \subsection{Sample methods in Serpent}
 
+\subsection{Profiling Serpent}
+
+Serpent (version 2.1.29) was executed using a profiling tool, namely gprof [cite it] in order
+to assess the time spent by functions which can give suggestion of code chunks candidates for
+parallelization. The execution of a simple problem without burn-up show two functions:
+\begin{verbatim}
+void AddPrivateRes()
+double MacroXS()
+\end{verbatim}
+However, considering the parallel nature of the Monte Carlo method, another option to be considered
+for parallelization is to evaluate where the MPI and OpenMP calls are performed and add GPU code
+in order to improve the load balance of the system using the GPU.
+
+A first problem is to consider GPU plus MPI and then eventually consider other combinations.
+
+
 \subsection{OpenCL in Serpent}
 
 The way it works with CPUs.
