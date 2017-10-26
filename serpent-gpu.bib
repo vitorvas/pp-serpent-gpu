@@ -1,10 +1,10 @@
 % Referencias para uso:
 
-% - paralelizacao do milonga
-% - desenvolvimento software livre
+% - GPU, OpenCL do Serpent
+% - Monte Carlo e DPU
 
 % Author: Vitor Vasconcelos
-% Date: 23/03/2017
+% Date: 25/10/2017
 
 
 @article{Henderson17,
@@ -78,3 +78,61 @@ keywords = "DRAGON ",
 abstract = "Abstract Coupling neutronic and thermal–hydraulic analyses of a nuclear reactor core is important because it helps identify the most relevant safety issues without conservative assumptions. Currently coupled computations solve the same governing equations using different coupling methods, which can be sorted into two categories: loose coupling and tight coupling. This paper proposes and verifies a third coupling approach called “the Integrated Tight Coupling (ITC) method”. The mathematical equations in the nuclear fuel are rearranged to be integrated via a novel concept of the energy-group function. In addition, the data from the neutron cross section library can be used directly. The \{ITC\} method is implemented using two open-source codes: the \{DRAGON\} code and OpenFOAM. Additionally, a coupled computation using these two codes is new and has not been done. The \{ITC\} method is verified using a 1.5-D (1-D neutronics and 2-D thermal–hydraulics) symmetric unit cell example. The mesh of the tightly integrated computation is 25% coarser than the loosely coupled one. Starting from a similar initial guess, the number of iterations for the \{ITC\} method is 24% fewer than that for the loosely coupled computation to reach the same accuracy. In addition, the \{ITC\} method is tested with different initial guesses. For all cases tested, the scheme converged to the same solution. With further improvement and additional testing, the \{ITC\} method has the potential to be incorporated with other neutronics and thermal–hydraulics codes. "
 }
 
+% Até aqui aproveitava do paper do milonga. A partir daqui pensando no Serpent.
+% ------------------------------------------------------------------------------------------------------------
+
+@article{Liang2017,
+title = "A GPU-based large-scale Monte Carlo simulation method for systems with long-range interactions",
+journal = "Journal of Computational Physics",
+volume = "338",
+number = "Supplement C",
+pages = "252 - 268",
+year = "2017",
+issn = "0021-9991",
+doi = "https://doi.org/10.1016/j.jcp.2017.02.069",
+url = "http://www.sciencedirect.com/science/article/pii/S0021999117301729",
+author = "Yihao Liang and Xiangjun Xing and Yaohang Li",
+keywords = "Monte Carlo, GPU, Parallel computing, Coulomb many body systems, Electrolytes, Charge renormalization"
+}
+
+@article{Dimarco2017,
+title = "An efficient numerical method for solving the Boltzmann equation in multidimensions",
+journal = "Journal of Computational Physics",
+year = "2017",
+issn = "0021-9991",
+doi = "https://doi.org/10.1016/j.jcp.2017.10.010",
+url = "http://www.sciencedirect.com/science/article/pii/S0021999117307489",
+author = "Giacomo Dimarco and Raphaël Loubère and Jacek Narski and Thomas Rey",
+keywords = "Boltzmann equation, Kinetic equations, Semi-Lagrangian schemes, Spectral schemes, 3D/3D, GPU, CUDA, OpenMP, MPI"
+}
+
+@article {Owens2007,
+author = {Owens, John D. and Luebke, David and Govindaraju, Naga and Harris, Mark and Krüger, Jens and Lefohn, Aaron E. and Purcell, Timothy J.},
+title = {A Survey of General-Purpose Computation on Graphics Hardware},
+journal = {Computer Graphics Forum},
+volume = {26},
+number = {1},
+publisher = {Blackwell Publishing Ltd},
+issn = {1467-8659},
+url = {http://dx.doi.org/10.1111/j.1467-8659.2007.01012.x},
+doi = {10.1111/j.1467-8659.2007.01012.x},
+pages = {80--113},
+keywords = {GPGPU, general-purpose computing on graphics hardware, parallel computing, GPU, graphics hardware, SIMD, stream processing, stream computing, data-parallel computing, high-performance computing, HPC, I.3.1 Computer Graphics: Hardware architecture, I.3.6 Computer Graphics: Methodology and techniques, D.2.2 Software Engineering: Design tools and techniques},
+year = {2007}
+}
+
+@phdthesis{Wen2017,
+author={Yuan Wen},
+title={Multi-Tasking Scheduling for Heterogeneous Systems},
+school={School of Informatics, University of Edinburgh},
+year={2017}
+}
+
+@masterthesis{Jespersen2015,
+author={Claus Jerpersen},
+title={Monte Carlo Evaluation of Financial Options using a GPU},
+school={Computer Science Department, Aarhus University},
+year={2015},
+month={February},
+address={Denmark}
+}
