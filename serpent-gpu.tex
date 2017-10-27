@@ -47,8 +47,8 @@ Belo Horizonte - MG, Brazil
 \email{vitors@cdtn.br}
 
 % Optional disclaimer: remove this command to hide
-\disclaimer{Notice: this manuscript is a work of fiction. Any resemblance to
-actual articles, living or dead, is purely coincidental.}
+%\disclaimer{Notice: this manuscript is a work of fiction. Any resemblance to
+%actual articles, living or dead, is purely coincidental.}
 
 
 %%%% Abstract
@@ -102,6 +102,17 @@ In this section the way the Serpent code generates its random numbers is explain
 
 \subsection{Sample methods in Serpent}
 
+\subsection{Memory management in Serpent}
+
+Monte Carlo simulations are huge memory consumers. This eager for memory requires a careful
+management of memory resources. Serpent deals with this issue with its own set of memory
+management primitives implemented using standard functions.
+
+This scheme avoids common problems of memory leaks and dangling pointers while helps to
+have a standard way of using resources.
+
+\textbf{How Serpent manages memory?}
+
 \subsection{Profiling Serpent}
 
 Serpent (version 2.1.29) was executed using a profiling tool, namely gprof [cite it] in order
@@ -117,12 +128,23 @@ in order to improve the load balance of the system using the GPU.
 
 A first problem is to consider GPU plus MPI and then eventually consider other combinations.
 
+\subsection{Data location in Serpent}
+
+Data location relates to the very specific problem of having data used by a function or an
+structure scattered in different locations in the physical memory. For the wide range of
+applications, this is absolutely irrelevant due to the speed of data access in cache memories.
+
+However, when dealing with a GPU, fetch data from one or another location can be the very
+bottle-neck in the implementation of an algorithm.
 
 \subsection{OpenCL in Serpent}
 
 The way it works with CPUs.
 The way it works wiht GPUs.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Comentado
+\iffalse
 \begin{subequations} \label{eqs:fullTransport}
 \begin{multline} \label{eq:fullTransportVol}
   \vec{\Omega}\vd \grad \psi(\vec{x}, \vec{\Omega})
@@ -139,6 +161,8 @@ condition
  \quad \vec{x} \in \partial V, \ \vec{\Omega} \vd \vec{n} < 0\,.
 \end{equation}
 \end{subequations}
+\fi
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results and Analysis}
@@ -158,29 +182,6 @@ is to simulate the TRIGA IPR-R1 in different setups:
 \subsection{Subsection Goes Here}
 The user must manually capitalize initial letters of a subsection heading.
 
-For those who like equations in their papers, \LaTeX\ is a good choice. Here is
-an equation for the Marshak diffusion boundary condition:
-\begin{equation} \label{eq:marshak}
-  4 J^- = \phi + 2 D \vec{n} \vd \grad \phi \,.
-\end{equation}
-If we so choose, we can effortlessly reference the equation later.
-
-Another paragraph starts with Eq.~\eqref{eq:marshak} and sets $J^-$ to zero, a
-vacuum boundary condition:
-\begin{equation*}
-  0 = \phi + \frac{2}{3} \frac{1}{\sigma} \vec{n} \vd \grad \phi \,.
-\end{equation*}
-The extrapolation distance is $2/3$. A more detailed asymptotic analysis yields
-an extrapolation distance of about $0.71045$.
-
-Figure~\ref{fig:voltage} shows how a plot might conceivably look in your
-document. Always place figures after they are referenced so as not to throw
-off the reader. You can use symbols and different line styles to help
-differentiate your results, especially if they are printed in black and white.
-Note how Fig.~\ref{fig:voltage} uses dashed lines \verb|--| for the exact
-solution, solid lines \verb|-| for the new method's solutions, and dotted lines
-\verb|:| for existing inaccurate methods.
-
 %\begin{figure}[ht] % replace 't' with 'b' to force it to be on the bottom
 %  \centering
 %  \includegraphics{example_figure}
@@ -188,6 +189,7 @@ solution, solid lines \verb|-| for the new method's solutions, and dotted lines
 %  \label{fig:voltage}
 %\end{figure}
 
+\iffalse
 Later on, we can include a table, even one that spans two columns such as
 Table~\ref{tab:widetable}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -217,6 +219,7 @@ Notice how the table reference uses a Roman numeral
 for its numbering scheme, whereas the figure reference uses an Arabic numeral.
 For one-column tables, use the \verb|table| environment; two-column tables use
 \verb|table*|. The same applies to figures.
+\fi
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Another Subsection}
