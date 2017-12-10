@@ -77,16 +77,28 @@ is thread based, which means processes (or threads) share the memory space while
 each process has its own memory space and information is exchanged by the use of messages.
 
 That said, a question raises: why bother spending time in implementing OpenCL parallelization
-in a code already parallel capable. The answer is more or less straighfoward. However, to fully
-answer the question, it is necessary to give a small introduction on what is OpenCL and why
-it can be usefull for Serpent.
+in a code already parallel capable. The answer is more or less straighfoward: to take
+advantage of the processing power available in graphic processing units (GPU).
+
+However, to fully answer the question considering aspects of general-purpose computing on graphics
+processing units (GPGPU), it is necessary to give a small introduction on how GPU's work, what isOpenCL and why
+it can be useful for Serpent.
+
+\subsection{Graphic Processing Units}
+
+Each GPU manufacturer provides its own set of compilers and libraries to allow general-purpose
+programming of their video cards. This can be a problem from the point of view of generality of
+the code being written. A code aimed to a specific hardware might go under deep re-factoring to
+be able to run in a different hardware. This is where OpenCL comes in handy.
 
 \subsection{What is OpenCL?}
 
-OpenCL\cite{opencl} is a...
+OpenCL\cite{opencl} is a standard brought to life by a consortium of hardware and software
+manufactures convinced by the idea that offering a standardized way of programming for different
+hardware would be benefical for both the users (in this case, developers) and the industry.
 
 OpenCL brings to Serpent the ability to take advantage of a variety of different hardware
-without special codification. This means, if a user has Graphic Processor Unities (GPU)
+without hardware specific codification. This means, if a user has Graphic Processor Unities (GPU)
 available, Serpent is able to use this additional computational power to simulate
 more neutron histories.
 
@@ -98,7 +110,8 @@ The absolutely key concept that must be understood in order to use the Monte Car
 the generation of random numbers. Unsurprisenly, there are many well-known methods of varying
 complexity and offering different quality\footnote{Quality is used in the sense of
   repeatbility, robustness, speed and randonmness of the numbers.} of the random numbers.
-In this section the way the Serpent code generates its random numbers is explained.
+In this section the way the Serpent code generates its random numbers is explained together
+with the implemented RNG method in OpenCL.
 
 \subsection{Sample methods in Serpent}
 
@@ -112,6 +125,7 @@ This scheme avoids common problems of memory leaks and dangling pointers while h
 have a standard way of using resources.
 
 \textbf{How Serpent manages memory?}
+\textbf{How GPU memory is used in this implementation?}
 
 \subsection{Woodcock Delta-tracking}
 
@@ -119,11 +133,11 @@ One of the most important features of Serpent Nuclear Code is it's ability in co
 traditional surface tracking - MCNP? cite - for neutrons with the Woodcock delta-tracking method \cite{Woodcock65}.
 
 
-\subsection{Profiling Serpent}
+\section{Profiling Serpent}
 
 Serpent (version 2.1.29) was executed using a profiling tool, namely gprof [cite it] in order
 to assess the time spent by functions which can give suggestion of code chunks candidates for
-parallelization. The execution of a simple problem without burn-up show two functions:
+parallelization. The execution of a simple problem \textbf{without} burn-up show two functions:
 \begin{verbatim}
 void AddPrivateRes()
 double MacroXS()
