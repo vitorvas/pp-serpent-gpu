@@ -113,7 +113,30 @@ complexity and offering different quality\footnote{Quality is used in the sense 
 In this section the way the Serpent code generates its random numbers is explained together
 with the implemented RNG method in OpenCL.
 
-\subsection{Sample methods in Serpent}
+
+\subsection{Woodcock Delta-tracking}
+
+One of the most important features of Serpent Nuclear Code is it's ability in combining
+traditional surface tracking - MCNP? cite - for neutrons with the Woodcock delta-tracking method \cite{Woodcock65}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Previous work}
+
+The processing power offered by GPUs is not neglected by scientists and software developers.
+Bergmann\cite{Bergmann2014} developed a framework for continuous energy Monte Carlo neutron
+transport (named WARP) with a careful design aimed to take advantages of the GPU architecture while, at the
+same time, proposing new solutions and algorithms to avoid the penalties imposed by data transfer
+or and memory traffic. Some of the ideas used in WARP were adapted to be implemented in Serpent in
+the present work.
+
+Another evolution on the implementation of Monte Carlo method for neutron transport from CPUs to GPUs
+is presented by Okubo\cite{Okubo2016}. In this work, the authors analyse the delta-tracking method,
+proposed by Wookcock\cite{Woodcock1965}, and implement new algorithms which avoid data race in
+GPUs. The results show the effectiveness of the proposed implementation in GPU compared to the CPU
+implementation.
+
+% Is this really important?
+%\subsection{Sample methods in Serpent}
 
 \subsection{Memory management in Serpent}
 
@@ -126,11 +149,6 @@ have a standard way of using resources.
 
 \textbf{How Serpent manages memory?}
 \textbf{How GPU memory is used in this implementation?}
-
-\subsection{Woodcock Delta-tracking}
-
-One of the most important features of Serpent Nuclear Code is it's ability in combining
-traditional surface tracking - MCNP? cite - for neutrons with the Woodcock delta-tracking method \cite{Woodcock65}.
 
 
 \section{Profiling Serpent}
