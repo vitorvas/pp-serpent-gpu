@@ -37,11 +37,11 @@
 
 %%%% Maketitle
 \title{Serpent nuclear code OpenCL extension}
-\author{Vitor V. A. Silva,$^{*}$}
+\author{Vitor Vasconcelos,$^{*}$}
 
 \institute{
-$^{*}$Centro de Desenvolvimento da Tecnologia Nuclear, CEP: 30......
-Belo Horizonte - MG, Brazil
+  $^{*}$Centro de Desenvolvimento da Tecnologia Nuclear - CDTN, Comiss\~ao Nacional de Energia Nuclear - CNEN,
+  Av. Presidente Ant\^onio Carlos 6627, CEP 31270-901, Belo Horizonte - MG, Brazil
 }
 
 \email{vitors@cdtn.br}
@@ -153,8 +153,31 @@ This scheme avoids common problems of memory leaks and dangling pointers while h
 have a standard way of using resources.
 
 \textbf{How Serpent manages memory?}
+Serpent has five source files where memory management occurs:
+\begin{itemize}
+\item freemem.c
+\item mem.c
+\item memcount.c
+\item preallocmem.c: void PreallocMem(long, long)
+\item reallocmem.c: WDB, RES1 and ACE arrays are allocated in this file.
+\end{itemize}
+
+
 \textbf{How GPU memory is used in this implementation?}
 
+\subsection{Data initialization in Serpent}
+Internally, Serpent starts by initializing its data strucutures inside a loop. This loop checks
+whether more coefficients are still to be calculated. It continues until \begin{verbatim}
+  ((long)RDB[DATA\_COEF\_CALC\_SPECIAL\_MODE]
+      == SPECIAL\_COEF\_MODE\_HIS\_ONLY)
+\end{verbatim}.
+
+Inside the loop a conditional checks if the process rank is zero to perform many checks and initializations.
+This is to garantee that MPI processes does not perform taks which are not supposed to be made in parallel.
+
+It is impossible (and impractical) to describe all actions performed by Serpent in this text. However, some
+procedures are key to understand how data is initialized, stored and managed in order to further explore
+the parallelization options in graphical processing units.
 
 \section{Profiling Serpent}
 
