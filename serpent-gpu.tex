@@ -37,7 +37,7 @@
 
 %%%% Maketitle
 \title{Serpent nuclear code OpenCL extension}
-\author{Vitor Vasconcelos,$^{*}$}
+\author{Vitor Vasconcelos$^{*}$}
 
 \institute{
   $^{*}$Centro de Desenvolvimento da Tecnologia Nuclear - CDTN, Comiss\~ao Nacional de Energia Nuclear - CNEN,
@@ -67,19 +67,24 @@ This is the abstract one day I'll write
 
 Serpent Nuclear code is... (some paragraphs of Serpent).
 
-There are many consideratios to be taken in account during the process of implementing new
-features in an existing code. Specifically regarding the Serpent Nuclear code, it must be
-said that it already implements two forms of CPU parallelization. Serpent is able to use
-OpenMP\cite{omp} to execute threads calculations. It is also capable of using OpenMPI\cite{openmpi}
-to carry on parallel calculations on many processors. It is not the objective in this paper
+
+
+%There are many consideratios to be taken in account for the process of implementing new
+%features in an existing code. Specifically regarding the Serpent Nuclear code,
+Before explaining the reason of implementing GPU capabilities to Serpent Nuclear code,
+it must be said that Serpent implements two forms of CPU parallelization. It is able to use
+OpenMP\cite{Dagum1998} to execute parallel calculations starting many threads. Another one
+is the use OpenMPI\cite{openmpi2004} to carry on parallel calculations on many processors.
+
+It is not the objective of this paper
 to explain the differences between OpenMP and OpenMPI, but it is enough to say that the former
 is thread based, which means processes (or threads) share the memory space while for the latter
-each process has its own memory space and information is exchanged by the use of messages.
+each process has its own memory space and information is exchanged by the use of standard messages.
+Both techniques are well-known and widely used as forms of implementing and run parallel applications.
 
-That said, a question raises: why bother spending time in implementing OpenCL parallelization
-in a code already parallel capable. The answer is more or less straighfoward: to take
+That said, a question raises: why bother spending time implementing OpenCL parallelization
+in a code already parallel capable? The answer is straighfoward: to take
 advantage of the processing power available in graphic processing units (GPU).
-
 However, to fully answer the question considering aspects of general-purpose computing on graphics
 processing units (GPGPU), it is necessary to give a small introduction on how GPU's work, what isOpenCL and why
 it can be useful for Serpent.
@@ -93,7 +98,7 @@ be able to run in a different hardware. This is where OpenCL comes in handy.
 
 \subsection{What is OpenCL?}
 
-OpenCL\cite{opencl} is a standard brought to life by a consortium of hardware and software
+OpenCL\cite{Stone2010} is a standard brought to life by a consortium of hardware and software
 manufactures convinced by the idea that offering a standardized way of programming for different
 hardware would be benefical for both the users (in this case, developers) and the industry.
 
