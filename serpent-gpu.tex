@@ -36,7 +36,8 @@
 
 
 %%%% Maketitle
-\title{Serpent nuclear code OpenCL extension}
+\title{Serpent nuclear code OpenCL extension OR Memory management in Serpent Nuclear code
+for developers}
 \author{Vitor Vasconcelos$^{*}$}
 
 \institute{
@@ -64,6 +65,7 @@ This is the abstract one day I'll write
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
+
 
 Serpent Nuclear code is... (some paragraphs of Serpent).
 
@@ -158,6 +160,9 @@ This scheme avoids common problems of memory leaks and dangling pointers while h
 have a standard way of using resources.
 
 \textbf{How Serpent manages memory?}
+Why Serpent uses big arrays instead of scattered elements in memory?
+Is \textbf{coalescence} the reason? Check with Jakkoo.
+
 Serpent has five source files where memory management occurs:
 \begin{itemize}
 \item freemem.c
@@ -167,14 +172,52 @@ Serpent has five source files where memory management occurs:
 \item reallocmem.c: WDB, RES1 and ACE arrays are allocated in this file.
 \end{itemize}
 
+The function \texttt{void FreeMem()} has a quite simple implementation. It checks for each data structure
+defined in Serpent for memory storage if it is already allocated and, if yes, frees the memory using
+the function \texttt{Mem()} for this purpose, not without closing any output file related to MPI processes
+in the case they are existent.
+
+The implementation of the function \texttt{void *Mem(long, ...)} is far more complex than the one for
+memory release. Starting from its signature, it is possible to see that it returns a pointer to void
+and has a non-fixed number of parameters. The returning pointer is defined as a void pointer in order
+to allow casting to other types as demanded. The pointer will hold the address of the allocated data.
+
+The function has different operation modes depending on the arguments. This means that accordingly to the set mode - macros
+previously defined - the function works in different ways. The modes defined by Serpent are:
+
+\begin{itemize}
+\item \texttt{MEM\_ALLOC}
+\item \texttt{MEM\_REALLOC}
+\item \texttt{MEM\_FREE}
+\item \texttt{MEM\_ALLOW}
+\item \texttt{MEM\_DENY}
+\end{itemize} 
+
+The allocation of memory is performed using the \texttt{MEM\_ALLOC} mode. This mode uses two arguments, the first
+corresponds to the number of elements - or the block size - to be allocated, while the second defines the size of each element.
+For memory re-allocation the mode \texttt{MEM\_REALLOC} is used. Continua...(mem.c)
+
+%It is worth noting that, differently from usual C memory management functions, Serpent memory management functions related
+%to allocation and re-allocation of memory need
+%
+% Queria dizer aqui que a memória tem que estar definida antes (RDB), mas não é bem assim. Tenho que ter certeza.
+
+The mode \texttt{MEM\_FREE} simply frees the memory space previously allocated.
+
+The modes \texttt{MEM\_ALLOW} and \texttt{MEM\_DENY} work in the same way, but with opposite objectives. As
+their names say, the former marks a memory space\footnote{Space in this context means a certain element of a huge array
+of elements which Serpent uses instead of many scattered elements in memory.} as allocatable while the former marks it as non-available
+for allocation.
+
+
 
 \textbf{How GPU memory is used in this implementation?}
 
 \subsection{Data initialization in Serpent}
 Internally, Serpent starts by initializing its data strucutures inside a loop. This loop checks
 whether more coefficients are still to be calculated. It continues until \begin{verbatim}
-  ((long)RDB[DATA\_COEF\_CALC\_SPECIAL\_MODE]
-      == SPECIAL\_COEF\_MODE\_HIS\_ONLY)
+  ((long)RDB[DATA_COEF_CALC_SPECIAL_MODE]
+      == SPECIAL_COEF_MODE_HIS_ONLY)
 \end{verbatim}.
 
 Inside the loop a conditional checks if the process rank is zero to perform many checks and initializations.
