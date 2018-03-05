@@ -166,10 +166,10 @@ Is \textbf{coalescence} the reason? Check with Jakkoo.
 Serpent has five source files where memory management occurs:
 \begin{itemize}
 \item freemem.c
-\item mem.c
 \item memcount.c
 \item preallocmem.c: void PreallocMem(long, long)
-\item reallocmem.c: WDB, RES1 and ACE arrays are allocated in this file.
+\item reallocmem.c: long ReallocMem(long, long). WDB, RES1 and ACE arrays are allocated in this file.
+\item mem.c
 \end{itemize}
 
 The function \texttt{void FreeMem()} has a quite simple implementation. It checks for each data structure
@@ -177,10 +177,20 @@ defined in Serpent for memory storage if it is already allocated and, if yes, fr
 the function \texttt{Mem()} for this purpose, not without closing any output file related to MPI processes
 in the case they are existent.
 
+The function \texttt{long MemCount()} keeps track of the size allocated for a variable since the last
+call. In its implementation, a function called \texttt{CalculateBytes()) and implemented in the file
+  \texttt{calculatebytes.c}, updates for all main data structures their allocated memory in bytes.
+  After the calculation, the byte counter is updated for every main data structures and the difference
+  in bytes since the last call is returned. The \texttt{MemCount()} is used to keep track of the increase
+  in memory comsuption, a useful feature when implementing a memory greed method like Monte Carlo.
+  
+% Explicar a Mem por último, já que todas as outras usam ela.
+
 The implementation of the function \texttt{void *Mem(long, ...)} is far more complex than the one for
 memory release. Starting from its signature, it is possible to see that it returns a pointer to void
 and has a non-fixed number of parameters. The returning pointer is defined as a void pointer in order
-to allow casting to other types as demanded. The pointer will hold the address of the allocated data.
+to allow casting to other types as needed by the code managing the memory and making use of the \texttt{Mem()}
+function for this purpose. The pointer will hold the address of the allocated data.
 
 The function has different operation modes depending on the arguments. This means that accordingly to the set mode - macros
 previously defined - the function works in different ways. The modes defined by Serpent are:
@@ -195,7 +205,9 @@ previously defined - the function works in different ways. The modes defined by 
 
 The allocation of memory is performed using the \texttt{MEM\_ALLOC} mode. This mode uses two arguments, the first
 corresponds to the number of elements - or the block size - to be allocated, while the second defines the size of each element.
-For memory re-allocation the mode \texttt{MEM\_REALLOC} is used. Continua...(mem.c)
+For memory re-allocation the mode \texttt{MEM\_REALLOC} is used. Do not confuse the mode for memory re-allocation with
+the implementation of the function \textt{ReallocMem(long, long) (which will be explained later). The re-allocation mode
+in function \texttt{Mem()} (mem.c)
 
 %It is worth noting that, differently from usual C memory management functions, Serpent memory management functions related
 %to allocation and re-allocation of memory need
@@ -206,7 +218,7 @@ The mode \texttt{MEM\_FREE} simply frees the memory space previously allocated.
 
 The modes \texttt{MEM\_ALLOW} and \texttt{MEM\_DENY} work in the same way, but with opposite objectives. As
 their names say, the former marks a memory space\footnote{Space in this context means a certain element of a huge array
-of elements which Serpent uses instead of many scattered elements in memory.} as allocatable while the former marks it as non-available
+of elements which Serpent uses instead of many scattered elements in memory.} as allocatable while the latter marks it as non-available
 for allocation.
 
 
