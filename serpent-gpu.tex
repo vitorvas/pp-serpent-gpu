@@ -163,25 +163,45 @@ have a standard way of using resources.
 Why Serpent uses big arrays instead of scattered elements in memory?
 Is \textbf{coalescence} the reason? Check with Jaakko.
 
-Serpent has five source files where memory management occurs:
-\begin{itemize}
-\item freemem.c
-\item memcount.c
-\item preallocmem.c: void PreallocMem(long, long)
-\item reallocmem.c: long ReallocMem(long, long). WDB, RES1 and ACE arrays are allocated in this file.
-\item mem.c
-\end{itemize}
+There are two reasons for using this rather special management memory
+structures and functions in Serpent. First of all, since Serpent is
+capable of run in parallel using both threaded parallelism and
+message passing communication, this memory management scheme is
+used to garantee a thread safe execution in the cases where
+the implemented version of MPI does not provide one.
+
+\textbf{Another reason for having such huge arrays memory variables is to
+provide a degree of coalescence for data in threaded parallel implementations.
+(Certeza disso? Chute forte...)}
+
+% Na prática, não vem ao caso quais os arquivos que implementam as 
+% funções. No máximo depois listar como curiosidade, não um itemize.
+%
+%Serpent has five source files which have implementations related
+%to memory management. They are:
+%\begin{itemize}
+%\item freemem.c: 
+%\item memcount.c:
+%\item preallocmem.c: void PreallocMem(long, long)
+%\item reallocmem.c: long ReallocMem(long, long). WDB, RES1 and ACE arrays are allocated in this file.
+%\item mem.c:
+%\end{itemize}
+
+Serpent has several functions implemented to manage memory resources. They are implemented in different
+source files for the sake of code organization. For the purpose of this text, the focus is on the functions
+and the way they work instead of on the source files, which will be listed at the end of this section for
+the sake of completness.
 
 The function \texttt{void FreeMem()} has a quite simple implementation (in file \texttt{fremem.c}). It checks for each data structure
 defined in Serpent for memory storage if it is already allocated and, if yes, frees the memory using
-the function \texttt{Mem()} for this purpose, not without closing any output file related to MPI processes
+the function \texttt{Mem()} for this purpose, also closing any output file related to MPI processes
 in the case they are existent.
 
 The function \texttt{long MemCount()} (implemented in file \texttt{memcount.c}) keeps track
 of the size allocated for a variable since the last
 call. In its implementation, a function called \texttt{CalculateBytes()} and implemented in the file
 \texttt{calculatebytes.c}, updates for all main data structures their allocated memory in bytes.
-After the calculation, the byte counter is updated for every main data structures and the difference
+After the calculation, the byte counter is updated for every main data structure and the difference
 in bytes since the last call is returned. The \texttt{MemCount()} is used to keep track of the increase
 in memory consumption, a useful feature when implementing a memory greed method like Monte Carlo.
 
@@ -191,11 +211,15 @@ in memory consumption, a useful feature when implementing a memory greed method 
 The implementation of the function \texttt{void *Mem(long, ...)} is far more complex than the one for
 memory release. Starting from its signature, it is possible to see that it returns a pointer to void
 and has a non-fixed number of parameters. The returning pointer is defined as a void pointer in order
-to allow casting to other types as needed by the code managing the memory and making use of the \texttt{Mem()}
-function for this purpose. The pointer will hold the address of the allocated data.
+to allow casting to other types as needed by the code invoking the \texttt{Mem()}
+function. The return pointer holds the address of the allocated data.
 
-The function has different operation modes depending on the arguments. This means that accordingly to the set mode - macros
-previously defined - the function works in different ways. The modes defined by Serpent are:
+This function has different operation modes depending on the arguments. Serpent uses a huge set of definitions for
+multiple purposes. Some of these are related to memory operations and are used to define the behavior function \texttt{Mem()}
+when passed as arguments. These operation ``modes'' are:
+
+%This means that accordingly to the mode set - macros
+%are previously defined in the main header file of- the function works in different ways. The modes of operation for function \texttt{Mem()} are:
 
 \begin{itemize}
 \item \texttt{MEM\_ALLOC}
@@ -207,9 +231,10 @@ previously defined - the function works in different ways. The modes defined by 
 
 The allocation of memory is performed using the \texttt{MEM\_ALLOC} mode. This mode uses two arguments, the first
 corresponds to the number of elements - or the block size - to be allocated, while the second defines the size of each element.
-For memory re-allocation the mode \texttt{MEM\_REALLOC} is used. Do not confuse the mode for memory re-allocation with
-the implementation of the function \texttt{ReallocMem(long, long)} (which will be explained later). The re-allocation mode
-in function \texttt{Mem()} (mem.c)
+For memory re-allocation the mode \texttt{MEM\_REALLOC} is used. It is important to remark that this mode for memory re-allocation
+has nothing to do with the implementation of the function \texttt{ReallocMem(long, long)} (which will be explained timely). The re-allocation mode
+in function \texttt{Mem()} (mem.c) checks for the arguments since it needs the variable (roughly the pointer to the address which must
+be resized) and the new size for it. If the new size is valid, the function reallocs memory for the variable and returns the pointer.
 
 %It is worth noting that, differently from usual C memory management functions, Serpent memory management functions related
 %to allocation and re-allocation of memory need
@@ -223,6 +248,9 @@ their names say, the former marks a memory space\footnote{Space in this context 
 of elements which Serpent uses instead of many scattered elements in memory.} as allocable while the latter marks it as non-available
 for allocation.
 
+The source files containing memory related functions are \texttt{freemem.c},
+\texttt{memcount.c}, \texttt{preallocmem.c}, \texttt{reallocmem.c}, \texttt{mem.c}
+and \texttt{freefinix.c}.
 
 
 \textbf{How GPU memory is used in this implementation?}
