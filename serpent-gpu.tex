@@ -250,7 +250,10 @@ for allocation.
 
 The source files containing memory related functions are \texttt{freemem.c},
 \texttt{memcount.c}, \texttt{preallocmem.c}, \texttt{reallocmem.c}, \texttt{mem.c}
-and \texttt{freefinix.c}.
+and \texttt{freefinix.c}\footnote{Serpent has the function \texttt{FreeFinix()} which
+  is used exclusivelly for multiphysics calculations using the FINIX code. This function
+  is not mentioned in the text since it is not part of the basic memory management functions
+  but an advanced feature.}.
 
 
 \textbf{How GPU memory is used in this implementation?}
