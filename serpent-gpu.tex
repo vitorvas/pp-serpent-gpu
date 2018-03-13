@@ -248,6 +248,14 @@ their names say, the former marks a memory space\footnote{Space in this context 
 of elements which Serpent uses instead of many scattered elements in memory.} as allocable while the latter marks it as non-available
 for allocation.
 
+Perhaps the most complex function in Serpent for memory management is the \texttt{ReallocMem(long, long)}.
+The comments included in the source code clearly asserts that this function allocates memory for
+three of the main arrays used for data storage. However, the mechanism of this management is not
+completely intuitive and deserves some comments.
+
+Firstly, this is a re-allocation function which is also responsible for the very first memory
+allocation. This is done by checking if data allocation is valid for the chosen array.
+
 The source files containing memory related functions are \texttt{freemem.c},
 \texttt{memcount.c}, \texttt{preallocmem.c}, \texttt{reallocmem.c}, \texttt{mem.c}
 and \texttt{freefinix.c}\footnote{Serpent has the function \texttt{FreeFinix()} which
