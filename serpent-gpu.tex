@@ -145,6 +145,26 @@ implementation.
 % Is this really important?
 %\subsection{Sample methods in Serpent}
 
+\subsection{General view of Serpent}
+
+There are some simple but useful information regarding aspects of Serpent design which are
+useful for understand and work on its source code. The very first one is related to the header
+files. The file \texttt{header.h} keeps all header files which must be included to run Serpent.
+It also defines macros for a huge number of constants related to the simulation aspects, like
+physics and geometry, materials information, reaction rates and so on. Function prototypes, function
+macros, global variables, constants and structures are also declared or defined in this file.
+
+The \texttt{locations.h} header file holds the information of array indexes. In other words, a set of
+definitions which are used to index a position in an array aimed to hold information about the simulation.
+This is better explained by an example: the macro \texttt{DATA\_PTR\_HOSTNAME} as a numerical value
+which is the index of an array where this information is kept.
+
+There are other header files in Serpent, but these two are the most important to know when working
+in Serpent source code. Another valuable piece of information is that every function used by Serpent
+is implemented in a source code with the same name. This makes straightforward to access the needed
+function implementation. For example, the function \texttt{InitData()} is implemented in the file
+\texttt{initdata.c}.
+
 \subsection{IMPORTANT}
 Carefully describe the ideas in the cited papers: probably ideas from both sources can be applied to
 the implementation. After describing (and deeply studying them), in the implementation section those
@@ -167,7 +187,7 @@ There are two reasons for using this rather special management memory
 structures and functions in Serpent. First of all, since Serpent is
 capable of run in parallel using both threaded parallelism and
 message passing communication, this memory management scheme is
-used to garantee a thread safe execution in the cases where
+used to guarantee a thread safe execution in the cases where
 the implemented version of MPI does not provide one.
 
 \textbf{Another reason for having such huge arrays memory variables is to
@@ -190,7 +210,7 @@ provide a degree of coalescence for data in threaded parallel implementations.
 Serpent has several functions implemented to manage memory resources. They are implemented in different
 source files for the sake of code organization. For the purpose of this text, the focus is on the functions
 and the way they work instead of on the source files, which will be listed at the end of this section for
-the sake of completness.
+the sake of completeness.
 
 The function \texttt{void FreeMem()} has a quite simple implementation (in file \texttt{fremem.c}). It checks for each data structure
 defined in Serpent for memory storage if it is already allocated and, if yes, frees the memory using
@@ -234,7 +254,7 @@ corresponds to the number of elements - or the block size - to be allocated, whi
 For memory re-allocation the mode \texttt{MEM\_REALLOC} is used. It is important to remark that this mode for memory re-allocation
 has nothing to do with the implementation of the function \texttt{ReallocMem(long, long)} (which will be explained timely). The re-allocation mode
 in function \texttt{Mem()} (mem.c) checks for the arguments since it needs the variable (roughly the pointer to the address which must
-be resized) and the new size for it. If the new size is valid, the function reallocs memory for the variable and returns the pointer.
+be re-sized) and the new size for it. If the new size is valid, the function reallocates memory for the variable and returns the pointer.
 
 %It is worth noting that, differently from usual C memory management functions, Serpent memory management functions related
 %to allocation and re-allocation of memory need
@@ -259,7 +279,7 @@ allocation. This is done by checking if data allocation is valid for the chosen 
 The source files containing memory related functions are \texttt{freemem.c},
 \texttt{memcount.c}, \texttt{preallocmem.c}, \texttt{reallocmem.c}, \texttt{mem.c}
 and \texttt{freefinix.c}\footnote{Serpent has the function \texttt{FreeFinix()} which
-  is used exclusivelly for multiphysics calculations using the FINIX code. This function
+  is used exclusively for multiphysics calculations using the FINIX code. This function
   is not mentioned in the text since it is not part of the basic memory management functions
   but an advanced feature.}.
 
