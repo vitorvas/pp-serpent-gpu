@@ -4,7 +4,7 @@ using OpenCL.
 
 Se o desenvolvimento do gerenciamente de memória ficar
 suficientemente completa, atentar para possível envio
-ao MC+2019 [link](http://www.ans.org/meetings/m_272).
+ao [M&C 2019 - Portland, OR](http://www.ans.org/meetings/m_272).
 
 
 
