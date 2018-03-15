@@ -147,20 +147,23 @@ implementation.
 
 \subsection{General view of Serpent}
 
-There are some simple but useful information regarding aspects of Serpent design which are
-useful for understand and work on its source code. The very first one is related to the header
-files. The file \texttt{header.h} keeps all header files which must be included to run Serpent.
+There are some simple information regarding aspects of Serpent design which are
+useful for more easily understand (and work on) its source code. The very first one is related to its
+main header files. Serpent has roughly eleven header files in its source code. Despite all of them
+being fundamental to compile and have Serpent running, two of these files have information which
+is basic to understand Serpent data structures and how data is stored and managed in memory.
+
+The file \texttt{header.h} keeps all header files which must be included to run Serpent.
 It also defines macros for a huge number of constants related to the simulation aspects, like
 physics and geometry, materials information, reaction rates and so on. Function prototypes, function
 macros, global variables, constants and structures are also declared or defined in this file.
 
 The \texttt{locations.h} header file holds the information of array indexes. In other words, a set of
 definitions which are used to index a position in an array aimed to hold information about the simulation.
-This is better explained by an example: the macro \texttt{DATA\_PTR\_HOSTNAME} as a numerical value
-which is the index of an array where this information is kept.
+This is better explained by an example: the macro \texttt{DATA\_PTR\_HOSTNAME} has a numerical value
+which is the index of an array where a pointer to the string containing the machine hostname is kept.
 
-There are other header files in Serpent, but these two are the most important to know when working
-in Serpent source code. Another valuable piece of information is that every function used by Serpent
+Another valuable piece of information is that every function used by Serpent
 is implemented in a source code with the same name. This makes straightforward to access the needed
 function implementation. For example, the function \texttt{InitData()} is implemented in the file
 \texttt{initdata.c}.
