@@ -74,15 +74,31 @@ Serpent Nuclear code is... (some paragraphs of Serpent).
 %There are many consideratios to be taken in account for the process of implementing new
 %features in an existing code. Specifically regarding the Serpent Nuclear code,
 Before explaining the reason of implementing GPU capabilities to Serpent Nuclear code,
-it must be said that Serpent implements two forms of CPU parallelization. It is able to use
-OpenMP\cite{Dagum1998} to execute parallel calculations starting many threads. Another one
-is the use OpenMPI\cite{openmpi2004} to carry on parallel calculations on many processors.
+it must be said that Serpent implements two forms of CPU parallelization. In order to
+do that, Serpent developers chose to make use of established technologies. The idea of using mature
+(and in this case, free and open-source) libraries and technologies is to avoid re-inventing the wheel
+while taking advantage of extensively tested implementations. The objective here is to
+introduce two of the main concepts behind the technologies used by Serpent to provide parallelism.
 
-It is not the objective of this paper
-to explain the differences between OpenMP and OpenMPI, but it is enough to say that the former
-is thread based, which means processes (or threads) share the memory space while for the latter
-each process has its own memory space and information is exchanged by the use of standard messages.
-Both techniques are well-known and widely used as forms of implementing and run parallel applications.
+The idea here is not to explain the intrinsics of each one, but to briefly present their basic
+concepts, how the work and what the differences between them. All of this keeping in mind the
+perspective of Serpent code development. The first one is OpenMP\cite{Dagum1998}, which is an API
+(application programming interface) supporting shared memory multiprocessing programming. OpenMP consists
+in a set of library routines, compiler directives and environment variables, and work in many different platforms.
+
+%to execute parallel calculations starting many threads. Another one
+OpenMPI\cite{openmpi2004} is one implementation of message passing interface API, to carry on parallel calculations on many processors.
+
+
+\subsubsection{OpenMP}
+
+
+\subsubsection{MPI}
+%It is not the objective of this paper
+%to explain the differences between OpenMP and OpenMPI, but it is enough to say that the former
+%is thread based, which means processes (or threads) share the memory space while for the latter
+%each process has its own memory space and information is exchanged by the use of standard messages.
+%Both techniques are well-known and widely used as forms of implementing and run parallel applications.
 
 That said, a question raises: why bother spending time implementing OpenCL parallelization
 in a code already parallel capable? The answer is straightforward: to take
@@ -90,6 +106,7 @@ advantage of the processing power available in graphic processing units (GPU).
 However, to fully answer the question considering aspects of general-purpose computing on graphics
 processing units (GPGPU), it is necessary to give a small introduction on how GPU's work, what is OpenCL and why
 it can be useful for Serpent.
+
 
 \subsection{Graphic Processing Units}
 
@@ -452,6 +469,12 @@ and another equation:
 \section{Acknowledgments}
 This material is based upon work supported a Department of Energy Nuclear
 Energy University Programs Graduate Fellowship.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Disclaimer}
+The main author is licensed to use and modify Serpent source-code for research
+and local purposes, not being allowed to share any changes without the formal
+agreement of Serpent copyright holders.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibliographystyle{ans} % Don't forget to run BibTeX !
