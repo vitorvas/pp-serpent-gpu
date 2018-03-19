@@ -126,7 +126,11 @@ The use of it followed by the clause \texttt{schedule} controls its behavior. Th
 clause affect how the loop iterations are mapped onto threads. If \texttt{schedule(static[,chunk])}
 a fixed number (defined by \textit{chunk}) of iterations is defined for each thread. If
 \texttt{schedule(dynamic[,chunk])}, as used in Serpent, each thread gets ``chunk'' iterations
-of a queue until all iterations have been handled.
+of a queue until all iterations have been handled. The latter is expect to work better in Serpent,
+since it is impossible to fine tune iterations partitions for an unknown number of different
+systems Serpent is aimed to work on. In simple words: using \textit{dynamic} make the local user
+compiler dispatch the decisions to the operating system running Serpent.
+
 
 An example of its use in Serpent is...
 
