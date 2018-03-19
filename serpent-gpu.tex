@@ -1,4 +1,5 @@
-\documentclass[twoside,a4paper,12pt,english,draft]{anstrans}
+%\documentclass[twoside,a4paper,12pt,english,draft]{anstrans}
+\documentclass[twoside,a4paper,12pt,english]{anstrans}
 
 %%%% packages and definitions (optional)
 \usepackage{graphicx} % allows inclusion of graphics
@@ -89,9 +90,45 @@ in a set of library routines, compiler directives and environment variables, and
 %to execute parallel calculations starting many threads. Another one
 OpenMPI\cite{openmpi2004} is one implementation of message passing interface API, to carry on parallel calculations on many processors.
 
-
 \subsubsection{OpenMP}
+In Serpent code, many constructions make use of OpenMP primitives in order to run portions of the code in parallel.
+OpenMP works by establishing a portion
+of the code to be executed under certain conditions. This is done with the use of compiler directives,
+environment variables and library calls. It is enought to keep in mind that there are hundreds (maybe thousands)
+of OpenMP directivies, but only a small set of them are the mostly used. Usually, this small set is enough
+to handle most of the parallel situations. In Serpent, the number of OpenMP directives used is xxx.
 
+% Table \ref{tab:openmp} shows all OpenMP keywords with attributes used in Serpent.
+%
+% IMPORTANTE
+%
+% Esse itemize vai sumir pois as explicações serão de acordo com a tabela.
+
+The \texttt{\#pragma omp for} works making the variables inside the block private to
+the thread. After the end of the loop, only after all threads are finished the
+program resumes its execution after the and of the loop. This construction only
+applied to the marked loop. The fact of having the loop variable private to each
+thread avoid the burden of taking care of race conditions to the programmer.
+
+\begin{itemize}
+\item \texttt{\#pragma omp atomic}: $10$ times.
+\item \texttt{\#pragma omp parallel private(...)}: $45$ times.
+\item \texttt{\#pragma omp for}: $25$ times.
+\item \texttt{\#pragma omp critical}: $8$ times.
+\item \texttt{\#pragma omp parallel for}: $5$ times.
+\item \texttt{\#pragma omp for schedule (dynamic)}: $7$ times.
+\item \texttt{\#pragma omp critical (event)}: $2$ times.
+\item \texttt{\#pragma omp critical (eventblock)}: $2$ times.
+\end{itemize}
+
+The \texttt{\#pragma omp for} is used to split the loop iterations among threads.
+The use of it followed by the clause \texttt{schedule} controls its behavior. This
+clause affect how the loop iterations are mapped onto threads. If \texttt{schedule(static[,chunk])}
+a fixed number (defined by \textit{chunk}) of iterations is defined for each thread. If
+\texttt{schedule(dynamic[,chunk])}, as used in Serpent, each thread gets ``chunk'' iterations
+of a queue until all iterations have been handled.
+
+An example of its use in Serpent is...
 
 \subsubsection{MPI}
 %It is not the objective of this paper
