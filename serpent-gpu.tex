@@ -141,7 +141,10 @@ a copy of the variables (listed as arguments of private) for each thread, with t
 of the original variable which exists prior to the construct. The private variable
 will mask the original variable located outside the thread. 
 
-
+In some parts of Serpent code, the developer will find the \texttt{\#pragma omp critical}
+clause. The objective of declaring a statement critical is to protect it from race conditions.
+In other words, if a variable is declared \texttt{critical}, only one thread at time will
+be able to change its value.
 
 
 
