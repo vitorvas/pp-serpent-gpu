@@ -106,33 +106,44 @@ to handle most of the parallel situations. In Serpent, the number of OpenMP dire
 
 The \texttt{\#pragma omp for} works making the variables inside the block private to
 the thread. After the end of the loop, only after all threads are finished the
-program resumes its execution after the and of the loop. This construction only
-applied to the marked loop. The fact of having the loop variable private to each
-thread avoid the burden of taking care of race conditions to the programmer.
+program resumes its execution. This construction only
+applies to the marked loop. The fact of having the loop variable private to each
+thread avoid the burden of taking care of race conditions by the programmer.
 
 \begin{itemize}
-\item \texttt{\#pragma omp atomic}: $10$ times.
-\item \texttt{\#pragma omp parallel private(...)}: $45$ times.
-\item \texttt{\#pragma omp for}: $25$ times.
-\item \texttt{\#pragma omp critical}: $8$ times.
+\item \texttt{\#pragma omp parallel private(...)}: $45$ times (OK).
 \item \texttt{\#pragma omp parallel for}: $5$ times.
-\item \texttt{\#pragma omp for schedule (dynamic)}: $7$ times.
+\item \texttt{\#pragma omp for}: $25$ times (OK).
+\item \texttt{\#pragma omp for schedule (dynamic)}: $7$ times (OK).
+\item \texttt{\#pragma omp atomic}: $10$ times.
+\item \texttt{\#pragma omp critical}: $8$ times.
 \item \texttt{\#pragma omp critical (event)}: $2$ times.
 \item \texttt{\#pragma omp critical (eventblock)}: $2$ times.
 \end{itemize}
 
 The \texttt{\#pragma omp for} is used to split the loop iterations among threads.
-The use of it followed by the clause \texttt{schedule} controls its behavior. This
-clause affect how the loop iterations are mapped onto threads. If \texttt{schedule(static[,chunk])}
+The use of it followed by the clause \texttt{schedule} controls its behavior in detail. This
+clause affects how the loop iterations are mapped onto threads. If \texttt{schedule(static[,chunk])}
 a fixed number (defined by \textit{chunk}) of iterations is defined for each thread. If
 \texttt{schedule(dynamic[,chunk])}, as used in Serpent, each thread gets ``chunk'' iterations
 of a queue until all iterations have been handled. The latter is expect to work better in Serpent,
 since it is impossible to fine tune iterations partitions for an unknown number of different
 systems Serpent is aimed to work on. In simple words: using \textit{dynamic} make the local user
-compiler dispatch the decisions to the operating system running Serpent.
+compiler dispatch the decisions to the operating system running Serpent. The default behavior
+in OpenMP if no clause is given to \texttt{for} is \texttt{static}.
 
+% No código, verificar se os loops do Serpent são independentes. Certamente serão...
 
 An example of its use in Serpent is...
+
+The \texttt{\#pragma omp parallel private(...)} clause tells to the compiler to create
+a copy of the variables (listed as arguments of private) for each thread, with the same name
+of the original variable which exists prior to the construct. The private variable
+will mask the original variable located outside the thread. 
+
+
+
+
 
 \subsubsection{MPI}
 %It is not the objective of this paper
