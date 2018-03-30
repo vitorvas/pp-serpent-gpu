@@ -116,7 +116,7 @@ thread avoid the burden of taking care of race conditions by the programmer.
 \item \texttt{\#pragma omp for}: $25$ times (OK).
 \item \texttt{\#pragma omp for schedule (dynamic)}: $7$ times (OK).
 \item \texttt{\#pragma omp atomic}: $10$ times.
-\item \texttt{\#pragma omp critical}: $8$ times.
+\item \texttt{\#pragma omp critical}: $8$ times (OK).
 \item \texttt{\#pragma omp critical (event)}: $2$ times.
 \item \texttt{\#pragma omp critical (eventblock)}: $2$ times.
 \end{itemize}
@@ -144,9 +144,22 @@ will mask the original variable located outside the thread.
 In some parts of Serpent code, the developer will find the \texttt{\#pragma omp critical}
 clause. The objective of declaring a statement critical is to protect it from race conditions.
 In other words, if a variable is declared \texttt{critical}, only one thread at time will
-be able to change its value.
+be able to change its value. (readsourcefile.c as example)
 
+%A situation where a variable must not be acessed by more than one thread at the same
+%time is a simple definition of atomic operation.
+An atomic operation is one which is
+done completely before any other access to the same resources. This is achieved garanting
+a mutual exclusion on the access to these resources which are, most of the times, variables. In
+OpenMP the clause \texttt{\#pragma omp atomic} is used to provide mutual exclusion
+to the update of a memory location. Modern hardware \cite{TimMattson} offers this
+kind of functionality at the instruction set level, making the use of \texttt{atomic}
+fast. 
 
+This clause is used in Serpent in some functions, like in \texttt{whereami()}.
+In this function, the atomic clause forbids that more than one thread updates the
+counter of data undefined positions hold in the main writable \texttt{WDB} array
+structure.
 
 \subsubsection{MPI}
 %It is not the objective of this paper
