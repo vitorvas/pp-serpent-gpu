@@ -108,21 +108,23 @@ The \texttt{\#pragma omp for} works making the variables inside the block privat
 the thread. After the end of the loop, only after all threads are finished the
 program resumes its execution. This construction only
 applies to the marked loop. The fact of having the loop variable private to each
-thread avoid the burden of taking care of race conditions by the programmer.
+thread avoid the burden of taking care of race conditions by the programmer. It is
+worth noting that this clause is applied once inside a \texttt{\#pragma omp parallel} clause.
 
-\begin{itemize}
-\item \texttt{\#pragma omp parallel private(...)}: $45$ times (OK).
-\item \texttt{\#pragma omp parallel for}: $5$ times.
-\item \texttt{\#pragma omp for}: $25$ times (OK).
-\item \texttt{\#pragma omp for schedule (dynamic)}: $7$ times (OK).
-\item \texttt{\#pragma omp atomic}: $10$ times.
-\item \texttt{\#pragma omp critical}: $8$ times (OK).
-\item \texttt{\#pragma omp critical (event)}: $2$ times.
-\item \texttt{\#pragma omp critical (eventblock)}: $2$ times.
-\end{itemize}
+%\begin{itemize}
+%\item \texttt{\#pragma omp parallel private(...)}: $45$ times (OK).
+%\item \texttt{\#pragma omp parallel for}: $5$ times. This is just a simples syntaxe to mark a region parallel
+%  and also define the for as parallel (OK).
+%\item \texttt{\#pragma omp for}: $25$ times (OK).
+%\item \texttt{\#pragma omp for schedule (dynamic)}: $7$ times (OK).
+%\item \texttt{\#pragma omp atomic}: $10$ times (OK).
+%\item \texttt{\#pragma omp critical}: $8$ times (OK).
+%\item \texttt{\#pragma omp critical (event)}: $2$ times.
+%\item \texttt{\#pragma omp critical (eventblock)}: $2$ times.
+%\end{itemize}
 
-The \texttt{\#pragma omp for} is used to split the loop iterations among threads.
-The use of it followed by the clause \texttt{schedule} controls its behavior in detail. This
+As said before, the \texttt{\#pragma omp for} is used to split the loop iterations among threads.
+The use of it followed by the clause \texttt{schedule} controls its behavior in details. This
 clause affects how the loop iterations are mapped onto threads. If \texttt{schedule(static[,chunk])}
 a fixed number (defined by \textit{chunk}) of iterations is defined for each thread. If
 \texttt{schedule(dynamic[,chunk])}, as used in Serpent, each thread gets ``chunk'' iterations
@@ -134,17 +136,26 @@ in OpenMP if no clause is given to \texttt{for} is \texttt{static}.
 
 % No código, verificar se os loops do Serpent são independentes. Certamente serão...
 
-An example of its use in Serpent is...
+The \texttt{\#pragma omp for} is the most used OpenMP construct in Serpent. One example of its application
+is in the function \texttt{VolumesMC()}, where it is extensively used for volume calculations based
+on points or tracks.
 
 The \texttt{\#pragma omp parallel private(...)} clause tells to the compiler to create
 a copy of the variables (listed as arguments of private) for each thread, with the same name
 of the original variable which exists prior to the construct. The private variable
-will mask the original variable located outside the thread. 
+will mask the original variable located outside the thread.  (EXEMPLO)
 
 In some parts of Serpent code, the developer will find the \texttt{\#pragma omp critical}
 clause. The objective of declaring a statement critical is to protect it from race conditions.
 In other words, if a variable is declared \texttt{critical}, only one thread at time will
-be able to change its value. (readsourcefile.c as example)
+be able to change its value. (readsourcefile.c as EXEMPLO)
+
+This clause allows naming the critical region. The purpose of naming these critical sections is
+to make multiple critical sections available at the same time, avoiding unnecessary impact
+on performance when every thread is competing for the same global critical section. Essentially,
+named critical sections allow a fine-grained syncronization. In Serpent code there are two ocasions
+where they are used. One example is the \texttt{DuplicateParticle()} function, where named critical
+sections garantee the correctness of event counting.
 
 %A situation where a variable must not be acessed by more than one thread at the same
 %time is a simple definition of atomic operation.
@@ -153,13 +164,13 @@ done completely before any other access to the same resources. This is achieved 
 a mutual exclusion on the access to these resources which are, most of the times, variables. In
 OpenMP the clause \texttt{\#pragma omp atomic} is used to provide mutual exclusion
 to the update of a memory location. Modern hardware \cite{TimMattson} offers this
-kind of functionality at the instruction set level, making the use of \texttt{atomic}
-fast. 
+kind of functionality at the instruction set level. 
 
 This clause is used in Serpent in some functions, like in \texttt{whereami()}.
 In this function, the atomic clause forbids that more than one thread updates the
 counter of data undefined positions hold in the main writable \texttt{WDB} array
 structure.
+
 
 \subsubsection{MPI}
 %It is not the objective of this paper
