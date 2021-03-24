@@ -90,123 +90,8 @@ in a set of library routines, compiler directives and environment variables, and
 %to execute parallel calculations starting many threads. Another one
 OpenMPI\cite{openmpi2004} is one implementation of message passing interface API, to carry on parallel calculations on many processors.
 
-\subsubsection{OpenMP}
-In Serpent code, many constructions make use of OpenMP primitives in order to run portions of the code in parallel.
-OpenMP works by establishing a portion
-of the code to be executed under certain conditions. This is done with the use of compiler directives,
-environment variables and library calls. It is enought to keep in mind that there are hundreds (maybe thousands)
-of OpenMP directivies, but only a small set of them are the mostly used. Usually, this small set is enough
-to handle most of the parallel situations. In Serpent, the number of OpenMP directives used is xxx.
-
-% Table \ref{tab:openmp} shows all OpenMP keywords with attributes used in Serpent.
-%
-% IMPORTANTE
-%
-% Esse itemize vai sumir pois as explicações serão de acordo com a tabela.
-
-The \texttt{\#pragma omp for} works making the variables inside the block private to
-the thread. After the end of the loop, only after all threads are finished the
-program resumes its execution. This construction only
-applies to the marked loop. The fact of having the loop variable private to each
-thread avoid the burden of taking care of race conditions by the programmer. It is
-worth noting that this clause is applied once inside a \texttt{\#pragma omp parallel} clause.
-
-%\begin{itemize}
-%\item \texttt{\#pragma omp parallel private(...)}: $45$ times (OK).
-%\item \texttt{\#pragma omp parallel for}: $5$ times. This is just a simples syntaxe to mark a region parallel
-%  and also define the for as parallel (OK).
-%\item \texttt{\#pragma omp for}: $25$ times (OK).
-%\item \texttt{\#pragma omp for schedule (dynamic)}: $7$ times (OK).
-%\item \texttt{\#pragma omp atomic}: $10$ times (OK).
-%\item \texttt{\#pragma omp critical}: $8$ times (OK).
-%\item \texttt{\#pragma omp critical (event)}: $2$ times.
-%\item \texttt{\#pragma omp critical (eventblock)}: $2$ times.
-%\end{itemize}
-
-As said before, the \texttt{\#pragma omp for} is used to split the loop iterations among threads.
-The use of it followed by the clause \texttt{schedule} controls its behavior in details. This
-clause affects how the loop iterations are mapped onto threads. If \texttt{schedule(static[,chunk])}
-a fixed number (defined by \textit{chunk}) of iterations is defined for each thread. If
-\texttt{schedule(dynamic[,chunk])}, as used in Serpent, each thread gets ``chunk'' iterations
-of a queue until all iterations have been handled. The latter is expect to work better in Serpent,
-since it is impossible to fine tune iterations partitions for an unknown number of different
-systems Serpent is aimed to work on. In simple words: using \textit{dynamic} make the local user
-compiler dispatch the decisions to the operating system running Serpent. The default behavior
-in OpenMP if no clause is given to \texttt{for} is \texttt{static}.
-
-% No código, verificar se os loops do Serpent são independentes. Certamente serão...
-
-The \texttt{\#pragma omp for} is the most used OpenMP construct in Serpent. One example of its application
-is in the function \texttt{VolumesMC()}, where it is extensively used for volume calculations based
-on points or tracks.
-
-The \texttt{\#pragma omp parallel private(...)} clause tells to the compiler to create
-a copy of the variables (listed as arguments of private) for each thread, with the same name
-of the original variable which exists prior to the construct. The private variable
-will mask the original variable located outside the thread.  (EXEMPLO)
-
-In some parts of Serpent code, the developer will find the \texttt{\#pragma omp critical}
-clause. The objective of declaring a statement critical is to protect it from race conditions.
-In other words, if a variable is declared \texttt{critical}, only one thread at time will
-be able to change its value. (readsourcefile.c as EXEMPLO)
-
-This clause allows naming the critical region. The purpose of naming these critical sections is
-to make multiple critical sections available at the same time, avoiding unnecessary impact
-on performance when every thread is competing for the same global critical section. Essentially,
-named critical sections allow a fine-grained syncronization. In Serpent code there are two ocasions
-where they are used. One example is the \texttt{DuplicateParticle()} function, where named critical
-sections garantee the correctness of event counting.
-
-%A situation where a variable must not be acessed by more than one thread at the same
-%time is a simple definition of atomic operation.
-An atomic operation is one which is
-done completely before any other access to the same resources. This is achieved garanting
-a mutual exclusion on the access to these resources which are, most of the times, variables. In
-OpenMP the clause \texttt{\#pragma omp atomic} is used to provide mutual exclusion
-to the update of a memory location. Modern hardware \cite{TimMattson} offers this
-kind of functionality at the instruction set level. 
-
-This clause is used in Serpent in some functions, like in \texttt{whereami()}.
-In this function, the atomic clause forbids that more than one thread updates the
-counter of data undefined positions hold in the main writable \texttt{WDB} array
-structure.
-
-
-\subsubsection{MPI}
-%It is not the objective of this paper
-%to explain the differences between OpenMP and OpenMPI, but it is enough to say that the former
-%is thread based, which means processes (or threads) share the memory space while for the latter
-%each process has its own memory space and information is exchanged by the use of standard messages.
-%Both techniques are well-known and widely used as forms of implementing and run parallel applications.
-
-That said, a question raises: why bother spending time implementing OpenCL parallelization
-in a code already parallel capable? The answer is straightforward: to take
-advantage of the processing power available in graphic processing units (GPU).
-However, to fully answer the question considering aspects of general-purpose computing on graphics
-processing units (GPGPU), it is necessary to give a small introduction on how GPU's work, what is OpenCL and why
-it can be useful for Serpent.
-
-
-\subsection{Graphic Processing Units}
-
-Each GPU manufacturer provides its own set of compilers and libraries to allow general-purpose
-programming of their video cards. This can be a problem from the point of view of generality of
-the code being written. A code aimed to a specific hardware might go under deep re-factoring to
-be able to run in a different hardware. This is where OpenCL comes in handy.
-
-\subsection{What is OpenCL?}
-
-OpenCL\cite{Stone2010} is a standard brought to life by a consortium of hardware and software
-manufactures convinced by the idea that offering a standardized way of programming for different
-hardware would be beneficial for both the users (in this case, developers) and the industry.
-
-OpenCL brings to Serpent the ability to take advantage of a variety of different hardware
-without hardware specific codification. This means, if a user has Graphic Processor Unities (GPU)
-available, Serpent is able to use this additional computational power to simulate
-more neutron histories.
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Theory}
+\section{Monte Carlo Simulation Theory}
 
 \subsection{Random Numbers Generation}
 The absolutely key concept that must be understood in order to use the Monte Carlo method is
@@ -215,7 +100,6 @@ complexity and offering different quality\footnote{Quality is used in the sense 
   repeatability, robustness, speed and randomness of the numbers.} of the random numbers.
 In this section the way the Serpent code generates its random numbers is explained together
 with the implemented RNG method in OpenCL.
-
 
 \subsection{Woodcock Delta-tracking}
 
@@ -241,6 +125,7 @@ implementation.
 % Is this really important?
 %\subsection{Sample methods in Serpent}
 
+
 \subsection{General view of Serpent}
 
 There are some simple information regarding aspects of Serpent design which are
@@ -264,11 +149,13 @@ is implemented in a source code with the same name. This makes straightforward t
 function implementation. For example, the function \texttt{InitData()} is implemented in the file
 \texttt{initdata.c}.
 
-\subsection{IMPORTANT}
-Carefully describe the ideas in the cited papers: probably ideas from both sources can be applied to
-the implementation. After describing (and deeply studying them), in the implementation section those
-ideas must be detailed in how they're applied in Serpent. \textbf{This will be the core of this work}.
+%Carefully describe the ideas in the cited papers: probably ideas from both sources can be applied to
+%the implementation. After describing (and deeply studying them), in the implementation section those
+%ideas must be detailed in how they're applied in Serpent. \textbf{This will be the core of this work}.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
 \subsection{Memory management in Serpent}
 
 Monte Carlo simulations are huge memory consumers. This eager for memory requires a careful
@@ -400,7 +287,130 @@ It is impossible (and impractical) to describe all actions performed by Serpent 
 procedures are key to understand how data is initialized, stored and managed in order to further explore
 the parallelization options in graphical processing units.
 
-\section{Profiling Serpent}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Hardware}
+
+\subsection{Graphic Processing Units}
+
+Each GPU manufacturer provides its own set of compilers and libraries to allow general-purpose
+programming of their video cards. This can be a problem from the point of view of generality of
+the code being written. A code aimed to a specific hardware might go under deep re-factoring to
+be able to run in a different hardware. This is where OpenCL comes in handy.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Parallel programming frameworks}
+
+\subsection{OpenMP}
+In Serpent code, many constructions make use of OpenMP primitives in order to run portions of the code in parallel.
+OpenMP works by establishing a portion
+of the code to be executed under certain conditions. This is done with the use of compiler directives,
+environment variables and library calls. It is enought to keep in mind that there are hundreds (maybe thousands)
+of OpenMP directivies, but only a small set of them are the mostly used. Usually, this small set is enough
+to handle most of the parallel situations. In Serpent, the number of OpenMP directives used is xxx.
+
+% Table \ref{tab:openmp} shows all OpenMP keywords with attributes used in Serpent.
+%
+% IMPORTANTE
+%
+% Esse itemize vai sumir pois as explicações serão de acordo com a tabela.
+
+The \texttt{\#pragma omp for} works making the variables inside the block private to
+the thread. After the end of the loop, only after all threads are finished the
+program resumes its execution. This construction only
+applies to the marked loop. The fact of having the loop variable private to each
+thread avoid the burden of taking care of race conditions by the programmer. It is
+worth noting that this clause is applied once inside a \texttt{\#pragma omp parallel} clause.
+
+%\begin{itemize}
+%\item \texttt{\#pragma omp parallel private(...)}: $45$ times (OK).
+%\item \texttt{\#pragma omp parallel for}: $5$ times. This is just a simples syntaxe to mark a region parallel
+%  and also define the for as parallel (OK).
+%\item \texttt{\#pragma omp for}: $25$ times (OK).
+%\item \texttt{\#pragma omp for schedule (dynamic)}: $7$ times (OK).
+%\item \texttt{\#pragma omp atomic}: $10$ times (OK).
+%\item \texttt{\#pragma omp critical}: $8$ times (OK).
+%\item \texttt{\#pragma omp critical (event)}: $2$ times.
+%\item \texttt{\#pragma omp critical (eventblock)}: $2$ times.
+%\end{itemize}
+
+As said before, the \texttt{\#pragma omp for} is used to split the loop iterations among threads.
+The use of it followed by the clause \texttt{schedule} controls its behavior in details. This
+clause affects how the loop iterations are mapped onto threads. If \texttt{schedule(static[,chunk])}
+a fixed number (defined by \textit{chunk}) of iterations is defined for each thread. If
+\texttt{schedule(dynamic[,chunk])}, as used in Serpent, each thread gets ``chunk'' iterations
+of a queue until all iterations have been handled. The latter is expect to work better in Serpent,
+since it is impossible to fine tune iterations partitions for an unknown number of different
+systems Serpent is aimed to work on. In simple words: using \textit{dynamic} make the local user
+compiler dispatch the decisions to the operating system running Serpent. The default behavior
+in OpenMP if no clause is given to \texttt{for} is \texttt{static}.
+
+% No código, verificar se os loops do Serpent são independentes. Certamente serão...
+
+The \texttt{\#pragma omp for} is the most used OpenMP construct in Serpent. One example of its application
+is in the function \texttt{VolumesMC()}, where it is extensively used for volume calculations based
+on points or tracks.
+
+The \texttt{\#pragma omp parallel private(...)} clause tells to the compiler to create
+a copy of the variables (listed as arguments of private) for each thread, with the same name
+of the original variable which exists prior to the construct. The private variable
+will mask the original variable located outside the thread.  (EXEMPLO)
+
+In some parts of Serpent code, the developer will find the \texttt{\#pragma omp critical}
+clause. The objective of declaring a statement critical is to protect it from race conditions.
+In other words, if a variable is declared \texttt{critical}, only one thread at time will
+be able to change its value. (readsourcefile.c as EXEMPLO)
+
+This clause allows naming the critical region. The purpose of naming these critical sections is
+to make multiple critical sections available at the same time, avoiding unnecessary impact
+on performance when every thread is competing for the same global critical section. Essentially,
+named critical sections allow a fine-grained syncronization. In Serpent code there are two ocasions
+where they are used. One example is the \texttt{DuplicateParticle()} function, where named critical
+sections garantee the correctness of event counting.
+
+%A situation where a variable must not be acessed by more than one thread at the same
+%time is a simple definition of atomic operation.
+An atomic operation is one which is
+done completely before any other access to the same resources. This is achieved garanting
+a mutual exclusion on the access to these resources which are, most of the times, variables. In
+OpenMP the clause \texttt{\#pragma omp atomic} is used to provide mutual exclusion
+to the update of a memory location. Modern hardware \cite{TimMattson} offers this
+kind of functionality at the instruction set level. 
+
+This clause is used in Serpent in some functions, like in \texttt{whereami()}.
+In this function, the atomic clause forbids that more than one thread updates the
+counter of data undefined positions hold in the main writable \texttt{WDB} array
+structure.
+
+
+\subsection{MPI}
+%It is not the objective of this paper
+%to explain the differences between OpenMP and OpenMPI, but it is enough to say that the former
+%is thread based, which means processes (or threads) share the memory space while for the latter
+%each process has its own memory space and information is exchanged by the use of standard messages.
+%Both techniques are well-known and widely used as forms of implementing and run parallel applications.
+
+That said, a question raises: why bother spending time implementing OpenCL parallelization
+in a code already parallel capable? The answer is straightforward: to take
+advantage of the processing power available in graphic processing units (GPU).
+However, to fully answer the question considering aspects of general-purpose computing on graphics
+processing units (GPGPU), it is necessary to give a small introduction on how GPU's work, what is OpenCL and why
+it can be useful for Serpent.
+
+
+
+\subsection{What is OpenCL?}
+
+OpenCL\cite{Stone2010} is a standard brought to life by a consortium of hardware and software
+manufactures convinced by the idea that offering a standardized way of programming for different
+hardware would be beneficial for both the users (in this case, developers) and the industry.
+
+OpenCL brings to Serpent the ability to take advantage of a variety of different hardware
+without hardware specific codification. This means, if a user has Graphic Processor Unities (GPU)
+available, Serpent is able to use this additional computational power to simulate
+more neutron histories.
+
+
+\subsection{Profiling Serpent}
 
 Serpent (version 2.1.29) was executed using a profiling tool, namely gprof [cite it] in order
 to assess the time spent by functions which can give suggestion of code chunks candidates for
@@ -423,6 +433,9 @@ applications, this is absolutely irrelevant due to the speed of data access in c
 
 However, when dealing with a GPU, fetch data from one or another location can be the very
 bottle-neck in the implementation of an algorithm.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{TUDO AQUI PRA SER REVISTO}
 
 \subsection{OpenCL in Serpent}
 
