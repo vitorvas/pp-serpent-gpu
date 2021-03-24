@@ -311,9 +311,9 @@ source files for the sake of code organization. For the purpose of this text, th
 and the way they work instead of on the source files, which will be listed at the end of this section for
 the sake of completeness.
 
-The function \texttt{void FreeMem()} has a quite simple implementation (in file \texttt{fremem.c}). It checks for each data structure
-defined in Serpent for memory storage if it is already allocated and, if yes, frees the memory using
-the function \texttt{Mem()} for this purpose, also closing any output file related to MPI processes
+The function \texttt{void FreeMem()} is a wrapper. It has a simple implementation (in file \texttt{fremem.c}), checking
+for each data structure defined in Serpent for memory storage. If memory is allocated the function frees the memory
+through calls to function \texttt{Mem()} for this purpose, also closing any output file related to MPI processes
 in the case they are existent.
 
 The function \texttt{long MemCount()} (implemented in file \texttt{memcount.c}) keeps track
@@ -363,11 +363,12 @@ be re-sized) and the new size for it. If the new size is valid, the function rea
 The mode \texttt{MEM\_FREE} simply frees the memory space previously allocated.
 
 The modes \texttt{MEM\_ALLOW} and \texttt{MEM\_DENY} work in the same way, but with opposite objectives. As
-their names say, the former marks a memory space\footnote{Space in this context means a certain element of a huge array
-of elements which Serpent uses instead of many scattered elements in memory.} as allocable while the latter marks it as non-available
-for allocation.
+their names say, the former marks a memory space%\footnote{Space in this context means a certain element of a huge array of elements which Serpent uses instead of many scattered elements in memory.}
+as available while the latter marks it as not available for allocation. This is simply a flag to make sure
+the use of memory is intended, but without any extra protection to the contents in memory since the
+date is always writable.
 
-Perhaps the most complex function in Serpent for memory management is the \texttt{ReallocMem(long, long)}.
+Perhaps the most complex function for memory management used in Serpent is \texttt{ReallocMem(long, long)}.
 The comments included in the source code clearly asserts that this function allocates memory for
 three of the main arrays used for data storage. However, the mechanism of this management is not
 completely intuitive and deserves some comments.
