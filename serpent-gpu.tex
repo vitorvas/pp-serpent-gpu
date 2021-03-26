@@ -5,7 +5,7 @@
 \usepackage{graphicx} % allows inclusion of graphics
 \usepackage{booktabs} % nice rules (thick lines) for tables
 \usepackage{microtype} % improves typography for PDF
-
+\usepackage{outlines} % to be able to used nested lists like \1 \2 \3...
 
 \newcommand{\SN}{S$_N$}
 \renewcommand{\vec}[1]{\bm{#1}} % vector is bold italic
@@ -439,8 +439,30 @@ bottle-neck in the implementation of an algorithm.
 
 \subsection{OpenCL in Serpent}
 
-The way it works with CPUs.
-The way it works with GPUs.
+Lista de arquivos mantida para facilitar a analise do caso minimo pro OpenCL.
+Dentro do ciclo de transporte, essas sao as funcoes chamadas e na ordem. A compreensão
+delas e dos dados (como botar isso em buffers pra ir pra GPU) eh fundamental.
+
+\textbf{ISSO NAO ESTA COMPLETO. Ha mais chamadas aninhadas aqui}
+\begin{outline}[enumerate]
+  \1 \texttt{transportcycle.c}: 1988 linhas
+  \2 \texttt{samplesrcpoint.c}: 919 linhas
+  \3 \texttt{randf.c}: 58 linhas
+  \3 \texttt{whereami.c}: 646 linhas
+  \3 \texttt{boundaryconditions.c} 745 linhas
+  \3 \texttt{isotropicdirection.c}: 48 linhas
+  \3 \texttt{maxwellenergy.c}: 45 linhas
+  \2 \texttt{fromque.c}: 76 linhas
+  \2 \texttt{tostack.c}: 65 linhas
+\end{outline}
+
+\subsubsection{\texttt{randf.c}}
+
+O Leppannen faz uma malandragem do C aqui pra transformar long pra float e vice-versa.
+Vi um video no youtube explicando isso, bom voltar la e pegar a referencia. Tudo pra
+economizar tempo e fazer operacao bitwise. O detalhe importante eh que parece que
+ele tem a seed (seed*id, algo assim) jah definida pra cada neutron dentro do famoso
+vetorzao gigante. vale a pena explicar o que eh feito aqui.
 
 \subsection{Delta-tracking}
 
